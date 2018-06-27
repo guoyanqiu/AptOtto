@@ -39,12 +39,12 @@ import javax.tools.JavaFileObject;
  * 参考资料https://www.jianshu.com/p/07ef8ba80562
  * package com.example;    // PackageElement
  * <p>
- * public class Foo {        // TypeElement
+ * public class Test {        // TypeElement
  * <p>
  * private int a;      // VariableElement
- * private Foo other;  // VariableElement
+ * private Test test;  // VariableElement
  * <p>
- * public Foo () {}    // ExecuteableElement
+ * public Test () {}    // ExecuteableElement
  * <p>
  * public void setA (  // ExecuteableElement
  * int newA   // TypeElement
@@ -107,8 +107,9 @@ public class SubscribeProcessor extends AbstractProcessor {
     }
 
     private void collectSubscribesMethod(Set<? extends TypeElement> annotations, RoundEnvironment roundEv) {
-        //
+        //遍历@Subscribe标注的元素
         for (Element annotatedElement : roundEv.getElementsAnnotatedWith(Subscribe.class)) {
+            //如果是方法
             if (annotatedElement instanceof ExecutableElement) {
                 ExecutableElement method = (ExecutableElement) annotatedElement;
                 if (checkHasNoErrors(method)) {
@@ -204,6 +205,7 @@ public class SubscribeProcessor extends AbstractProcessor {
             //com.apt.otto.MainActivity.class
             String subscribeHostClass = getClassString(typeElement);
 
+            //执行addSubscribeInfo方法
             writeLine(writer, 2, "addSubscribeInfo(new SubscriberInfo(" + subscribeHostClass, ",new SubscriberMethodInfo[] {");
             int index = 0;
 
@@ -227,6 +229,8 @@ public class SubscribeProcessor extends AbstractProcessor {
 
                 //构造SubscriberMethodInfo信息的字符串
                 List<String> subscriberMethodInfoStrs = new ArrayList<>();
+
+                //构建SubscriberMethodInfo对象
                 subscriberMethodInfoStrs.add("new SubscriberMethodInfo" + "(\"" + methodName + "\",");
                 index++;
                 if (index != subscribeMethods.size()) {
@@ -314,3 +318,5 @@ public class SubscribeProcessor extends AbstractProcessor {
         return true;
     }
 }
+
+

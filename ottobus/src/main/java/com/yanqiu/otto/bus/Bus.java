@@ -17,11 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Bus {
     private SubscriberInfoFinder subscriberInfoFinder;
     private final Map<Class<?>, CopyOnWriteArrayList<EventHandler>> eventHandlerMap;
-    private final Map<Object, List<Class<?>>> eventTypeMap;
-
     public Bus(SubscriberInfoFinder subscriberInfoFinder) {
         eventHandlerMap = new HashMap<>();
-        eventTypeMap = new HashMap<>();
         this.subscriberInfoFinder = subscriberInfoFinder;
     }
 
@@ -31,10 +28,11 @@ public class Bus {
         if (eventHandlers != null) {
             for (EventHandler eventHandler : eventHandlers) {
                 if (eventHandler.isMatch(targetType)) {
-                    eventHandler.handEvent(event);
+                    eventHandler.handleEvent(event);
                 }
             }
         }
+
     }
 
     public void register(Object subscriber) {
@@ -51,7 +49,8 @@ public class Bus {
 
     private void subscribe(Object subscriber, SubscriberMethod subscriberMethod) {
         //搜索subscriber对象的事件类型
-        Class<?> eventType = subscriberMethod.eventType;
+        Class<?> eventType =
+                subscriberMethod.eventType;
 
         EventHandler eventHandler = new EventHandler(subscriber, subscriberMethod);
         CopyOnWriteArrayList<EventHandler> eventHandlers = eventHandlerMap.get(eventType);
@@ -61,14 +60,6 @@ public class Bus {
         }
 
         eventHandlers.add(eventHandler);
-
-        List<Class<?>> subscribedEvents = eventTypeMap.get(subscriber);
-        if (subscribedEvents == null) {
-            subscribedEvents = new ArrayList<>();
-            eventTypeMap.put(subscriber, subscribedEvents);
-        }
-        subscribedEvents.add(eventType);
-
     }
 
     public synchronized void unregister(Object subscriber) {

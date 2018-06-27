@@ -17,7 +17,7 @@ public class EventHandler {
         this.subscriberMethod = subscriberMethod;
     }
 
-    public void handEvent(Object event) {
+    public void handleEvent(Object event) {
         try {
             subscriberMethod.method.invoke(subscriber, event);
         } catch (IllegalAccessException e) {
