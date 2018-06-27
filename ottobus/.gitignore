@@ -65,7 +65,6 @@ fastlane/test_output
 fastlane/readme.md
 *.iml
 .gradle
-.idea/
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -73,4 +72,5 @@ fastlane/readme.md
 /build
 /captures
 .externalNativeBuild
+.idea/
  
